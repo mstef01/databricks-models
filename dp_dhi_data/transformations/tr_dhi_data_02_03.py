@@ -1,8 +1,18 @@
 import pandas as pd
 from pyspark import pipelines as dp
-import sys
-sys.path.append("/Workspace/Repos/mstefan@hotmail.de/databricks-utils")
-from utils import format_sector
+
+
+def format_sector(time):
+    time_str = str(abs(time) / 1000)
+    time_split = time_str.split(".")
+    if len(time_split) >= 2:
+        secs = time_split[0]
+        millisecs = time_split[1]
+        mins = int(secs) // 60
+        secs = int(secs) % 60
+        millisecs = int(millisecs)
+        output = f"{mins:02d}:{secs:02d}.{millisecs:<03d}"
+        return f"{output}"
 
 @dp.materialized_view(
     name = "dhi_data.03_dhi_data_gold.wc_season_2026_gold",

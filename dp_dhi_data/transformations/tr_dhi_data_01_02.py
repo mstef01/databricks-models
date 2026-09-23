@@ -1,8 +1,21 @@
 from pyspark import pipelines as dp
 import pandas as pd
-import sys
-sys.path.append("/Workspace/Repos/mstefan@hotmail.de/databricks-utils")
-from utils import format_time_gap
+
+
+def format_time_gap(time):
+    time_str = str(abs(time) / 1000)
+    time_split = time_str.split(".")
+    if len(time_split) >= 2:
+        secs = time_split[0]
+        millisecs = time_split[1]
+        mins = int(secs) // 60
+        secs = int(secs) % 60
+        millisecs = int(millisecs)
+        output = f"{mins:02d}:{secs:02d}.{millisecs:<03d}"
+        if time < 0:
+            return f"-{output}"
+        else:
+            return f"+{output}"
 
 # define the materialized view
 @dp.materialized_view(
